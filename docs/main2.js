@@ -117,8 +117,8 @@ function simpleObjectsLayout() {
   for (let i = 0; i < keys.length; i++) {
     let key = keys[i];
     let object2 = new THREE.CSS3DObject(htmlElement3(key));
-    object2.position.x = 50000;
-    object2.position.y = -50000;
+    //object2.position.x = 50000;
+    //object2.position.y = -50000;
 
     scene.add(object2);
 
@@ -520,17 +520,20 @@ function transform(target, duration, aaa = "") {
   if (aaa === "grid") {
     for (let i = 0; i < targets2.simple.length; i++) {
       let object = targets2.simple[i];
+      object.element.classList.remove("none");
+      //object.element.style = "display:unset;";
+      //console.log(object.element);
       let targetObject = targets2[aaa][i];
       transformObjectPosition(object, targetObject, duration);
       transformObjectRotation(object, targetObject, duration);
     }
   } else {
     let targetObject = new THREE.Object3D();
-    targetObject.position.x = 50000;
-    targetObject.position.y = -50000;
+    //targetObject.position.x = 50000;
+    //targetObject.position.y = -50000;
     for (let i = 0; i < targets2.simple.length; i++) {
       let object = targets2.simple[i];
-
+      object.element.classList.add("none");
       transformObjectPosition(object, targetObject, duration);
       transformObjectRotation(object, targetObject, duration);
     }
