@@ -5,7 +5,6 @@ let data = [];
 let camera, scene, renderer, controls, composer;
 var hblur, vblur;
 let targets = { simple: [], table: [], sphere: [], helix: [], grid: [] };
-let targets2 = { simple: [], grid: [] };
 
 let selectedIndex = -1;
 let layout = "table";
@@ -101,29 +100,6 @@ function addClickListeners() {
 }
 
 function simpleObjectsLayout() {
-  let map = {};
-  let key = "書名";
-  for (let i = 0; i < data.length; i++) {
-    //for (const obj of data) {
-    let obj = data[i];
-    let subject = obj[key] ? obj[key][0] : "";
-    if (!map[subject]) {
-      map[subject] = [];
-    }
-    map[subject].push(i);
-  }
-  let keys = Object.keys(map);
-
-  for (let i = 0; i < keys.length; i++) {
-    let key = keys[i];
-    let object2 = new THREE.CSS3DObject(htmlElement3(key));
-    object2.position.x = 50000;
-    object2.position.y = -50000;
-
-    scene.add(object2);
-
-    targets2.simple.push(object2);
-  }
   /*
   for (let i = 0; i < table.length; i += 5) {
     let object = new THREE.CSS3DObject(htmlElement(table, i));
@@ -135,18 +111,6 @@ function simpleObjectsLayout() {
     targets.simple.push(object);
     tableLayout(table, i);
   }
-  
-
-  let object3 = new THREE.CSS3DObject(htmlElement3());
-  object3.position.x = 0;
-  object3.position.y = 1000;
-  object3.position.z = 1000;
-
-  scene.add(object2);
-  scene.add(object3);
-
-  targets2.simple.push(object2);
-  targets2.simple.push(object3);
   */
 
   for (let i = 0; i < data.length; i++) {
@@ -161,42 +125,6 @@ function simpleObjectsLayout() {
     targets.simple.push(object);
     tableLayout2(data, i);
   }
-}
-
-function htmlElement3(label) {
-  let element = document.createElement("div");
-  //element.width = 120 * 10;
-  //element.height = 120;
-  element.className = "element2";
-  element.style.backgroundColor = "white";
-
-  //const image = document.createElement("img");
-  //image.className = "number";
-  //image.width = 120 * 10;
-  //image.height = 120;
-  //image.src = `files/${table[i].objectID}.jpg`;
-  //element.appendChild(image);
-
-  /*
-    let number = document.createElement("div");
-    number.className = "number";
-    number.textContent = i / 5 + 1;
-    element.appendChild(number);
-  
-    let symbol = document.createElement("div");
-    symbol.className = "symbol";
-    symbol.textContent = table[i];
-    element.appendChild(symbol);
-    */
-
-  //let details = document.createElement("div");
-  //details.className = "details2";
-  element.innerHTML = "<br/>" + label; /*table[i].label;*/
-  //element.appendChild(details);
-
-  //details.addEventListener("click", () => elementClickHandler(i), false);
-
-  return element;
 }
 
 function htmlElement2(table, i) {
@@ -283,8 +211,6 @@ function elementClickHandler(i) {
 
   console.log({ camera, controls });
 
-  let prev = selectedIndex;
-
   selectedIndex = i;
 
   if (selectedIndex > 0) {
@@ -295,8 +221,7 @@ function elementClickHandler(i) {
   for (let i = 0; i < data.length; i++) {
     if (i === selectedIndex) {
       document.getElementById("toc_" + i).classList.add("active");
-
-      document.getElementById("toc_" + (i > 0 ? i - 1 : 0)).scrollIntoView({
+      document.getElementById("toc_" + i).scrollIntoView({
         behavior: "smooth",
         block: "start",
       });
@@ -380,7 +305,7 @@ function addClickListener(target, elementId) {
       button.style = `display: none;`;
       */
       layout = this.getAttribute("id");
-      transform(target, 2000, layout);
+      transform(target, 2000);
     },
     false
   );
@@ -463,15 +388,6 @@ function addGridObject2() {
   for (let i = 0; i < keys.length; i++) {
     let key = keys[i];
     let arr = map[key];
-
-    if (i < 2 || true) {
-      const object = new THREE.Object3D();
-      object.position.x = -140 * 5 + 360 / 2;
-      object.position.y = 990 + 70 * 2;
-      object.position.z = i * 1000 - 2000;
-      targets2.grid.push(object);
-    }
-
     for (let j = 0; j < arr.length; j++) {
       let object = new THREE.Object3D();
 
@@ -505,35 +421,14 @@ function addGridObject2() {
   */
 }
 
-function transform(target, duration, aaa = "") {
+function transform(target, duration) {
   TWEEN.removeAll();
-
-  //console.log({ target, aaa, targets2 });
 
   for (let i = 0; i < targets.simple.length; i++) {
     let object = targets.simple[i];
     let targetObject = target[i];
     transformObjectPosition(object, targetObject, duration);
     transformObjectRotation(object, targetObject, duration);
-  }
-
-  if (aaa === "grid") {
-    for (let i = 0; i < targets2.simple.length; i++) {
-      let object = targets2.simple[i];
-      let targetObject = targets2[aaa][i];
-      transformObjectPosition(object, targetObject, duration);
-      transformObjectRotation(object, targetObject, duration);
-    }
-  } else {
-    let targetObject = new THREE.Object3D();
-    targetObject.position.x = 50000;
-    targetObject.position.y = -50000;
-    for (let i = 0; i < targets2.simple.length; i++) {
-      let object = targets2.simple[i];
-
-      transformObjectPosition(object, targetObject, duration);
-      transformObjectRotation(object, targetObject, duration);
-    }
   }
 
   new TWEEN.Tween(this)
